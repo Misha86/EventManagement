@@ -19,9 +19,3 @@ class EventAdmin(admin.ModelAdmin):
     model = EventType
     list_display = ('id', 'user', 'event_type', 'timestamp')
     list_filter = ('event_type', 'timestamp')
-
-
-
-
-
-
