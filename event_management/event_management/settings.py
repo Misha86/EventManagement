@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     # my apps
     'event',
     # third apps
+    'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
