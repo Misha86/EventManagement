@@ -15,7 +15,7 @@ class EventType(models.Model):
         name (str): Name of the event type
     """
 
-    name = models.CharField(_("Name"), max_length=256, help_text=_('This field is required'))
+    name = models.CharField(_("Name"), max_length=256, unique=True, help_text=_('This field is required'))
 
     class Meta:
         """This meta class stores verbose names and ordering data."""
