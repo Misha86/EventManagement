@@ -55,5 +55,5 @@ class EventFactory(factory.django.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     event_type = factory.SubFactory(EventTypeFactory)
-    info = factory.LazyAttribute(lambda o: {'username': o.user.username})
+    info = factory.LazyAttribute(lambda o: {'username': str(o.user)})
     timestamp = get_future_datetime()
