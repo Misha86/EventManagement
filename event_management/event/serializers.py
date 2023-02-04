@@ -28,6 +28,5 @@ class EventSerializer(serializers.ModelSerializer):
 
     def validate_event_type(self, name):
         """Get existing event type or create new."""
-
         event_type, _ = EventType.objects.get_or_create(name=name)
         return event_type
