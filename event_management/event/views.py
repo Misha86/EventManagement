@@ -16,7 +16,7 @@ class EventCreateAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         """Post method for creating events."""
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save(user=request.user)
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

@@ -1,17 +1,7 @@
 """The module includes project serializers."""
 
-from .models import Event, EventType
+from .models import Event, EventType, User
 from rest_framework import serializers
-
-
-class EventTypeSerializer(serializers.ModelSerializer):
-    """Serializer for EventType Model."""
-
-    class Meta:
-        """Class with a model and model fields for serialization."""
-
-        model = EventType
-        fields = ['name']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -30,3 +20,9 @@ class EventSerializer(serializers.ModelSerializer):
         """Get existing event type or create new."""
         event_type, _ = EventType.objects.get_or_create(name=name)
         return event_type
+
+    def to_representation(self, instance):
+        """Change representation user from id to username."""
+        data = super().to_representation(instance)
+        data['user'] = instance.user.username
+        return data
