@@ -8,6 +8,26 @@ import uuid
 User = get_user_model()
 
 
+class EventType(models.Model):
+    """This class represents a basic Event Type (for an event system).
+
+    Attributes:
+        name (str): Name of the event type
+    """
+
+    name = models.CharField(_("Name"), max_length=256, help_text=_('This field is required'))
+
+    class Meta:
+        """This meta class stores verbose names and ordering data."""
+
+        ordering = ['id']
+        verbose_name_plural = _('Event Types')
+
+    def __str__(self) -> str:
+        """str: Returns class name and instance id."""
+        return f"{self.__class__.__name__} #{self.id}"
+
+
 class Event(models.Model):
     """This class represents a basic Event (for an event system).
 
@@ -39,4 +59,3 @@ class Event(models.Model):
     def __str__(self) -> str:
         """str: Returns class name and instance id."""
         return f"{self.__class__.__name__} #{self.id}"
-
