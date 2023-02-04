@@ -42,7 +42,7 @@ class EventTypeFactory(factory.django.DjangoModelFactory):
         model = models.EventType
         django_get_or_create = ("name",)
 
-    name = factory.Sequence(lambda n: f"username_{n}")
+    name = factory.Sequence(lambda n: f"event_type{n}")
 
 
 class EventFactory(factory.django.DjangoModelFactory):
