@@ -24,8 +24,8 @@ class EventType(models.Model):
         verbose_name_plural = _('Event Types')
 
     def __str__(self) -> str:
-        """str: Returns class name and instance id."""
-        return f"{self.__class__.__name__} #{self.id}"
+        """str: Returns instance name."""
+        return self.name.title()
 
 
 class Event(models.Model):
@@ -46,7 +46,7 @@ class Event(models.Model):
     user = models.ForeignKey(User, related_name='events', on_delete=models.CASCADE, verbose_name=_('User'))
     event_type = models.ForeignKey(EventType, related_name='events', on_delete=models.CASCADE,
                                    verbose_name=_('Event Type'))
-    info = models.JSONField(_('Event info'), help_text=help_texts['required'])
+    info = models.JSONField(_('Event info'), default=dict, help_text=help_texts['required'])
     timestamp = models.DateTimeField(_('Event datetime'), help_text=help_texts['required'])
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
