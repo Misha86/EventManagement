@@ -26,7 +26,7 @@ class EventType(models.Model):
 
     def __str__(self) -> str:
         """str: Returns instance name."""
-        return self.name.title()
+        return self.name
 
 
 class Event(models.Model):
