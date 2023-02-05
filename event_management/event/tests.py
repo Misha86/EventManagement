@@ -1,11 +1,34 @@
-"""The module includes tests for models, serializers and views."""
+"""The module includes tests for models, serializers and views.
+
+EvenModelTest (Class EvenModelTest for testing Event model):
+ - Test for creating event with valid data;
+ - Test for creating event with past timestamp (exception raises);
+ - Test for __str__ method.
+
+EvenSerializerTest (Class EvenSerializerTest for testing Event serializer):
+ - Test for serializer with valid data;
+ - Test for serializer with invalid timestamp;
+ - Test for serializer when event type doesn't exist;
+ - Test for serializer a to_representation method.
+
+EvenViewTest (Class EvenViewTest for testing Event view):
+ - Test for creating event (status code 201);
+ - Test for creating event by not authenticated user (status code 401);
+ - Test for creating event using GET method (status code 405);
+ - Test for creating event with None some field (status code 400);
+ - Test for creating event without data (status code 400).
+"""
 
 from datetime import timedelta
 
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
+from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ErrorDetail, ValidationError
+from rest_framework.test import APITestCase
 
 from . import factories, models, serializers
 
@@ -56,7 +79,7 @@ class EvenSerializerTest(TestCase):
         self.serializer = serializers.EventSerializer(data=self.valid_data)
 
     def test_serialize_valid_data(self):
-        """Check serializer with valid data."""
+        """Test for serializer with valid data."""
         self.serializer.is_valid(raise_exception=True)
         self.assertEqual(self.serializer.validated_data["event_type"].name, self.valid_data["event_type"])
         self.assertEqual(self.serializer.validated_data["timestamp"], self.valid_data["timestamp"])
@@ -68,7 +91,7 @@ class EvenSerializerTest(TestCase):
         self.assertEqual(event.event_type, self.event_type)
 
     def test_serialize_invalid_timestamp(self):
-        """Check serializer with invalid timestamp."""
+        """Test for serializer with invalid timestamp."""
         self.valid_data.update(dict(timestamp=timezone.now() - timedelta(days=1)))
         with self.assertRaises(ValidationError) as ex:
             self.serializer.is_valid(raise_exception=True)
@@ -79,7 +102,7 @@ class EvenSerializerTest(TestCase):
         )
 
     def test_serialize_event_type_no_exist(self):
-        """Check serializer when event type doesn't exist."""
+        """Test for serializer when event type doesn't exist."""
         event_type = "no such event type"
         self.valid_data.update(dict(event_type=event_type))
 
@@ -92,83 +115,76 @@ class EvenSerializerTest(TestCase):
         self.assertTrue(models.EventType.objects.filter(name=event_type).exists())
 
     def test_to_representation_method(self):
-        """Check serializer a to_representation method."""
+        """Test for serializer a to_representation method."""
         self.serializer.is_valid(raise_exception=True)
         self.serializer.save(user=self.user)
-        self.assertEqual(self.serializer.data['user'], self.user.username)
+        self.assertEqual(self.serializer.data["user"], self.user.username)
 
 
+class EvenViewTest(APITestCase):
+    """Class EvenViewTest for testing Event view."""
 
-# class AppointmentViewTest(APITestCase):
-#     """Class AppointmentViewTest for testing Appointment view."""
-#
-#     def setUp(self):
-#         """This method adds needed info for tests."""
-#         self.create_ap_url = "api:appointments-list-create"
-#         specialist = SpecialistFactory(add_schedule=True)
-#         location = LocationFactory()
-#         fake_data = AppointmentFactory.build(specialist=specialist, location=location)
-#         self.valid_data = {
-#             "start_time": fake_data.start_time,
-#             "specialist": fake_data.specialist.id,
-#             "location": fake_data.location.id,
-#             "duration": fake_data.duration,
-#             "customer_firstname": fake_data.customer_lastname,
-#             "customer_lastname": fake_data.customer_lastname,
-#             "customer_email": fake_data.customer_email,
-#         }
-#
-#     def tearDown(self):
-#         """This method deletes all users and cleans avatars' data."""
-#         CustomUser.objects.all().delete()
-#
-#     def test_get_all_appointments(self):
-#         """Test for getting all appointments."""
-#         AppointmentFactory.create_batch(5)
-#         response = self.client.get(reverse(self.create_ap_url), format="json")
-#         results = response.data["results"]
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(len(results), 5)
-#
-#     def test_create_appointment_by_specialist_fail(self):
-#         """Test for creating appointment by specialist is forbidden."""
-#         specialist = SpecialistFactory()
-#         self.client.force_authenticate(specialist)
-#
-#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
-#         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-#
-#     def test_create_appointment_by_admin(self):
-#         """Test for creating appointment by admin."""
-#         admin = AdminFactory()
-#         self.client.force_authenticate(admin)
-#
-#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#
-#     def test_create_appointment_by_manager_fail(self):
-#         """Test for creating appointment by manager is forbidden."""
-#         manager = ManagerFactory()
-#         self.client.force_authenticate(manager)
-#
-#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
-#         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-#
-#     def test_create_appointment_by_superuser(self):
-#         """Test for creating appointment by superuser."""
-#         superuser = SuperuserFactory()
-#
-#         self.client.force_authenticate(superuser)
-#
-#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#
-#     def test_create_appointment_not_specialist_schedule_error(self):
-#         """Create appointment for specialist without schedule."""
-#         admin = AdminFactory()
-#         specialist = SpecialistFactory()
-#         self.client.force_authenticate(admin)
-#         self.valid_data.update(dict(specialist=specialist.id))
-#
-#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
-#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def setUp(self):
+        """Set needed info for tests."""
+        self.create_event_url = "event:create-event"
+        self.event_type = factories.EventTypeFactory()
+        self.event_data = factories.EventFactory.build()
+        self.valid_data = {
+            "event_type": self.event_type.name,
+            "info": self.event_data.info,
+            "timestamp": self.event_data.timestamp,
+        }
+        self.token = Token.objects.create(user=factories.UserFactory())
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
+
+    def test_create_event(self):
+        """Test for creating event (status code 201)."""
+        response = self.client.post(reverse(self.create_event_url), self.valid_data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["event_type"], self.event_type.name)
+        self.assertEqual(response.data["info"], self.event_data.info)
+        self.assertEqual(response.data["timestamp"], self.event_data.timestamp.isoformat())
+
+    def test_create_event_user_not_authenticated_error(self):
+        """Test for creating event by not authenticated user (status code 401)."""
+        self.client.credentials()
+        response = self.client.post(reverse(self.create_event_url), self.valid_data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.data["detail"], "Authentication credentials were not provided.")
+
+    def test_create_event_get_method_fail(self):
+        """Test for creating event using GET method (status code 405)."""
+        response = self.client.get(reverse(self.create_event_url), self.valid_data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(
+            response.data["detail"], ErrorDetail(string='Method "GET" not allowed.', code="method_not_allowed")
+        )
+
+    def test_create_event_event_type_null_fail(self):
+        """Test for creating event with None some field (status code 400)."""
+        for field in ["event_type", "info", "timestamp"]:
+            with self.subTest(field=field):
+                response = self.client.post(
+                    reverse(self.create_event_url), {**self.valid_data, **{field: None}}, format="json"
+                )
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.assertEqual(
+                    response.data, {field: [ErrorDetail(string="This field may not be null.", code="null")]}
+                )
+
+    def test_create_event_without_data_fail(self):
+        """Test for creating event without data (status code 400)."""
+        response = self.client.post(reverse(self.create_event_url), format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data,
+            {
+                "event_type": [ErrorDetail(string="This field is required.", code="required")],
+                "info": [ErrorDetail(string="This field is required.", code="required")],
+                "timestamp": [ErrorDetail(string="This field is required.", code="required")],
+            },
+        )

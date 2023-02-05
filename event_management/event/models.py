@@ -50,7 +50,7 @@ class Event(models.Model):
     event_type = models.ForeignKey(
         EventType, related_name="events", on_delete=models.CASCADE, verbose_name=_("Event Type")
     )
-    info = models.JSONField(_("Event info"), default=dict, help_text=help_texts["required"])
+    info = models.JSONField(_("Event info"), help_text=help_texts["required"])
     timestamp = models.DateTimeField(
         _("Event datetime"), help_text=help_texts["required"], validators=[validate_datetime_is_future]
     )
