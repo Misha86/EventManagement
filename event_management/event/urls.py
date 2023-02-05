@@ -7,5 +7,5 @@ from . import views
 app_name = 'event'
 
 urlpatterns = [
-    path('create/', views.EventCreateAPIView.as_view(), name='create-event'),
+    path("create/", views.EventCreateAPIView.as_view(), name="create-event"),
 ]

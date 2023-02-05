@@ -33,12 +33,12 @@ class EvenModelTest(TestCase):
         with self.assertRaises(ValidationError) as ex:
             self.e_factory(timestamp=timezone.now() - timedelta(days=1)).full_clean()
         message = ex.exception.args[0]
-        self.assertEqual(message, 'DateTime value should have future datetime.')
+        self.assertEqual(message, "DateTime value should have future datetime.")
 
     def test_create_event_str_method(self):
         """Test for __str__ method."""
         event = self.e_factory()
-        self.assertEqual(str(event), f'{event.__class__.__name__} #{event.id}')
+        self.assertEqual(str(event), f"{event.__class__.__name__} #{event.id}")
 
 
 class EvenSerializerTest(TestCase):
@@ -49,18 +49,18 @@ class EvenSerializerTest(TestCase):
         self.user = factories.UserFactory()
         self.event_type = factories.EventTypeFactory()
         self.valid_data = {
-            'event_type': self.event_type.name,
-            'info': {},
-            'timestamp': timezone.now() + timedelta(days=1),
+            "event_type": self.event_type.name,
+            "info": {},
+            "timestamp": timezone.now() + timedelta(days=1),
         }
         self.serializer = serializers.EventSerializer(data=self.valid_data)
 
     def test_serialize_valid_data(self):
         """Check serializer with valid data."""
         self.serializer.is_valid(raise_exception=True)
-        self.assertEqual(self.serializer.validated_data['event_type'].name, self.valid_data['event_type'])
-        self.assertEqual(self.serializer.validated_data['timestamp'], self.valid_data['timestamp'])
-        self.assertEqual(self.serializer.validated_data['info'], self.valid_data['info'])
+        self.assertEqual(self.serializer.validated_data["event_type"].name, self.valid_data["event_type"])
+        self.assertEqual(self.serializer.validated_data["timestamp"], self.valid_data["timestamp"])
+        self.assertEqual(self.serializer.validated_data["info"], self.valid_data["info"])
 
         user = factories.UserFactory()
         event = self.serializer.save(user=user)
@@ -75,12 +75,12 @@ class EvenSerializerTest(TestCase):
 
         message = ex.exception.args[0]
         self.assertEqual(
-            message, {'timestamp': [ErrorDetail(string='DateTime value should have future datetime.', code='invalid')]}
+            message, {"timestamp": [ErrorDetail(string="DateTime value should have future datetime.", code="invalid")]}
         )
 
     def test_serialize_event_type_no_exist(self):
         """Check serializer when event type doesn't exist."""
-        event_type = 'no such event type'
+        event_type = "no such event type"
         self.valid_data.update(dict(event_type=event_type))
 
         self.assertFalse(models.EventType.objects.filter(name=event_type).exists())
@@ -88,7 +88,7 @@ class EvenSerializerTest(TestCase):
         self.serializer.is_valid(raise_exception=True)
         self.serializer.save(user=self.user)
 
-        self.assertEqual(self.serializer.data['event_type'], event_type)
+        self.assertEqual(self.serializer.data["event_type"], event_type)
         self.assertTrue(models.EventType.objects.filter(name=event_type).exists())
 
     def test_to_representation_method(self):
@@ -96,6 +96,7 @@ class EvenSerializerTest(TestCase):
         self.serializer.is_valid(raise_exception=True)
         self.serializer.save(user=self.user)
         self.assertEqual(self.serializer.data['user'], self.user.username)
+
 
 
 # class AppointmentViewTest(APITestCase):

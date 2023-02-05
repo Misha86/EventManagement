@@ -14,8 +14,8 @@ class EventSerializer(serializers.ModelSerializer):
         """Class with a model and model fields for serialization."""
 
         model = Event
-        fields = '__all__'
-        read_only_fields = ('id', 'user', 'created_at')
+        fields = "__all__"
+        read_only_fields = ("id", "user", "created_at")
 
     def validate_event_type(self, name):
         """Get existing event type or create new."""
@@ -25,5 +25,5 @@ class EventSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """Change representation user from id to username."""
         data = super().to_representation(instance)
-        data['user'] = instance.user.username
+        data["user"] = instance.user.username
         return data
