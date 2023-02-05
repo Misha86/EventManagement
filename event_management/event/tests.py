@@ -26,7 +26,7 @@ class EvenModelTest(TestCase):
         self.assertGreater(event.timestamp, timezone.now())
 
     def test_create_event_timestamp_is_past(self):
-        """Test for creating event with past timestamp."""
+        """Test for creating event with past timestamp (exception raises)."""
         with self.assertRaises(ValidationError) as ex:
             self.e_factory(timestamp=timezone.now() - timedelta(days=1)).full_clean()
         message = ex.exception.args[0]
@@ -93,3 +93,78 @@ class EvenSerializerTest(TestCase):
         self.serializer.is_valid(raise_exception=True)
         self.serializer.save(user=self.user)
         self.assertEqual(self.serializer.data["user"], self.user.username)
+
+# class AppointmentViewTest(APITestCase):
+#     """Class AppointmentViewTest for testing Appointment view."""
+#
+#     def setUp(self):
+#         """This method adds needed info for tests."""
+#         self.create_ap_url = "api:appointments-list-create"
+#         specialist = SpecialistFactory(add_schedule=True)
+#         location = LocationFactory()
+#         fake_data = AppointmentFactory.build(specialist=specialist, location=location)
+#         self.valid_data = {
+#             "start_time": fake_data.start_time,
+#             "specialist": fake_data.specialist.id,
+#             "location": fake_data.location.id,
+#             "duration": fake_data.duration,
+#             "customer_firstname": fake_data.customer_lastname,
+#             "customer_lastname": fake_data.customer_lastname,
+#             "customer_email": fake_data.customer_email,
+#         }
+#
+#     def tearDown(self):
+#         """This method deletes all users and cleans avatars' data."""
+#         CustomUser.objects.all().delete()
+#
+#     def test_get_all_appointments(self):
+#         """Test for getting all appointments."""
+#         AppointmentFactory.create_batch(5)
+#         response = self.client.get(reverse(self.create_ap_url), format="json")
+#         results = response.data["results"]
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(len(results), 5)
+#
+#     def test_create_appointment_by_specialist_fail(self):
+#         """Test for creating appointment by specialist is forbidden."""
+#         specialist = SpecialistFactory()
+#         self.client.force_authenticate(specialist)
+#
+#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
+#         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+#
+#     def test_create_appointment_by_admin(self):
+#         """Test for creating appointment by admin."""
+#         admin = AdminFactory()
+#         self.client.force_authenticate(admin)
+#
+#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#
+#     def test_create_appointment_by_manager_fail(self):
+#         """Test for creating appointment by manager is forbidden."""
+#         manager = ManagerFactory()
+#         self.client.force_authenticate(manager)
+#
+#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
+#         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+#
+#     def test_create_appointment_by_superuser(self):
+#         """Test for creating appointment by superuser."""
+#         superuser = SuperuserFactory()
+#
+#         self.client.force_authenticate(superuser)
+#
+#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#
+#     def test_create_appointment_not_specialist_schedule_error(self):
+#         """Create appointment for specialist without schedule."""
+#         admin = AdminFactory()
+#         specialist = SpecialistFactory()
+#         self.client.force_authenticate(admin)
+#         self.valid_data.update(dict(specialist=specialist.id))
+#
+#         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
