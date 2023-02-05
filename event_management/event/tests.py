@@ -1,17 +1,20 @@
 """The module includes tests for models, serializers and views."""
 
-from django.test import TestCase
-from rest_framework.exceptions import ValidationError, ErrorDetail
-from . import factories, serializers, models
-from django.utils import timezone
 from datetime import timedelta
+
+from django.test import TestCase
+from django.utils import timezone
+
+from rest_framework.exceptions import ErrorDetail, ValidationError
+
+from . import factories, models, serializers
 
 
 class EvenModelTest(TestCase):
     """Class EvenModelTest for testing Event model."""
 
     def setUp(self):
-        """This method adds needed info for tests."""
+        """Set needed info for tests."""
         self.e_factory = factories.EventFactory
 
     def test_create_event_valid_data(self):
@@ -42,7 +45,7 @@ class EvenSerializerTest(TestCase):
     """Class EvenSerializerTest for testing Event serializer."""
 
     def setUp(self):
-        """This method adds needed info for tests."""
+        """Set needed info for tests."""
         self.user = factories.UserFactory()
         self.event_type = factories.EventTypeFactory()
         self.valid_data = {
@@ -92,7 +95,8 @@ class EvenSerializerTest(TestCase):
         """Check serializer a to_representation method."""
         self.serializer.is_valid(raise_exception=True)
         self.serializer.save(user=self.user)
-        self.assertEqual(self.serializer.data["user"], self.user.username)
+        self.assertEqual(self.serializer.data['user'], self.user.username)
+
 
 # class AppointmentViewTest(APITestCase):
 #     """Class AppointmentViewTest for testing Appointment view."""
@@ -167,4 +171,3 @@ class EvenSerializerTest(TestCase):
 #
 #         response = self.client.post(reverse(self.create_ap_url), self.valid_data, format="json")
 #         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-

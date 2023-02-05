@@ -1,7 +1,8 @@
 """The module includes project serializers."""
 
-from .models import Event, EventType
 from rest_framework import serializers
+
+from .models import Event, EventType
 
 
 class EventSerializer(serializers.ModelSerializer):

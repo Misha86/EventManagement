@@ -1,17 +1,18 @@
 """This module provides all needed Event views."""
 
-from rest_framework.generics import CreateAPIView
-from .serializers import EventSerializer
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from .serializers import EventSerializer
 
 
 class EventCreateAPIView(CreateAPIView):
     """This view is used for creating new event."""
 
     serializer_class = EventSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         """Post method for creating events."""

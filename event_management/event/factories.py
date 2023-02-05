@@ -1,11 +1,14 @@
 """Module for all factories classes used in the tests."""
 
-import factory
-from . import models
-from django.contrib.auth.hashers import make_password
 from datetime import timedelta
-import factory.fuzzy
+
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
+
+import factory
+import factory.fuzzy
+
+from . import models
 
 
 def get_future_datetime(start=1, end=10, force_hour=13, force_minute=30):
@@ -27,9 +30,9 @@ class UserFactory(factory.django.DjangoModelFactory):
         """Class Meta for the definition of the User model."""
 
         model = models.User
-        django_get_or_create = ("username",)
+        django_get_or_create = ('username',)
 
-    username = factory.Sequence(lambda n: f"username_{n}")
+    username = factory.Sequence(lambda n: f'username_{n}')
     password = make_password('0987654321')
 
 
@@ -40,9 +43,9 @@ class EventTypeFactory(factory.django.DjangoModelFactory):
         """Class Meta for the definition of the EventType model."""
 
         model = models.EventType
-        django_get_or_create = ("name",)
+        django_get_or_create = ('name',)
 
-    name = factory.Sequence(lambda n: f"event_type{n}")
+    name = factory.Sequence(lambda n: f'event_type{n}')
 
 
 class EventFactory(factory.django.DjangoModelFactory):

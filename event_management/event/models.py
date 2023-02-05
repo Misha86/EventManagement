@@ -1,9 +1,11 @@
 """Module for all project models."""
 
 import uuid
-from django.db import models
+
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.utils.translation import gettext as _
+
 from .validators import validate_datetime_is_future
 
 User = get_user_model()
@@ -16,7 +18,7 @@ class EventType(models.Model):
         name (str): Name of the event type
     """
 
-    name = models.CharField(_("Name"), max_length=256, unique=True, help_text=_('This field is required'))
+    name = models.CharField(_('Name'), max_length=256, unique=True, help_text=_('This field is required'))
 
     class Meta:
         """This meta class stores verbose names and ordering data."""
@@ -45,11 +47,13 @@ class Event(models.Model):
 
     id = models.UUIDField('UUID', primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, related_name='events', on_delete=models.CASCADE, verbose_name=_('User'))
-    event_type = models.ForeignKey(EventType, related_name='events', on_delete=models.CASCADE,
-                                   verbose_name=_('Event Type'))
+    event_type = models.ForeignKey(
+        EventType, related_name='events', on_delete=models.CASCADE, verbose_name=_('Event Type')
+    )
     info = models.JSONField(_('Event info'), default=dict, help_text=help_texts['required'])
-    timestamp = models.DateTimeField(_('Event datetime'), help_text=help_texts['required'],
-                                     validators=[validate_datetime_is_future])
+    timestamp = models.DateTimeField(
+        _('Event datetime'), help_text=help_texts['required'], validators=[validate_datetime_is_future]
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     class Meta:
@@ -60,4 +64,4 @@ class Event(models.Model):
 
     def __str__(self) -> str:
         """str: Returns class name and instance id."""
-        return f"{self.__class__.__name__} #{self.id}"
+        return f'{self.__class__.__name__} #{self.id}'
