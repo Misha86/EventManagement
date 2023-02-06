@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /src
 
-COPY ./requirements.txt /src/requirements.txt
+COPY ./requirements.txt .
 COPY ./.env .
 
 # Install required packages
@@ -24,6 +24,4 @@ EXPOSE 8000
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# docker build -t event_image .
-# docker run -p 8000:8000 -v $(pwd)/event_management/db.sqlite3:/src/db.sqlite3 --rm event_image
 
