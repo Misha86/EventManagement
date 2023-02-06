@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'event',
     # third apps
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -133,4 +134,23 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+}
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [],  # List URL namespaces to ignore
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Input token in such format  'Token token_key'"
+        },
+    },
+    "SUPPORTED_SUBMIT_METHODS": ["get", "put", "post", "delete", "patch"],
+    "SHOW_REQUEST_HEADERS": True,
+}
+
+REDOC_SETTINGS = {
+    "LAZY_RENDERING": False,
 }
