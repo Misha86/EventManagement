@@ -138,6 +138,5 @@ dump.rdb
 # media/
 .DS_Store
 
-.flake8
 .isort.cfg
 .mypy.ini
