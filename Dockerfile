@@ -9,6 +9,11 @@ WORKDIR /src
 COPY ./requirements.txt /src/requirements.txt
 COPY ./.env .
 
+# Install required packages
+RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
+
+RUN pip install --upgrade pip
+
 RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
 
 COPY ./event_management .
