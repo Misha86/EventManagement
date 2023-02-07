@@ -56,7 +56,7 @@ jobs:
       - name: Run Coverage Test # running tests
         run: |
           coverage run event_management/manage.py test event
-          coverage run report
+          coverage report
       - name: Run Test # running tests
         run: |
           python event_management/manage.py test
