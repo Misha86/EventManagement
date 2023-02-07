@@ -140,3 +140,4 @@ dump.rdb
 
 .isort.cfg
 .mypy.ini
+staticfiles
