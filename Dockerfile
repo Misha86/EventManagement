@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
 
 COPY ./event_management .
 
-RUN python manage.py makemigrations && python manage.py migrate
+RUN python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input
 
 EXPOSE 8000
 
