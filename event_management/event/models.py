@@ -45,7 +45,7 @@ class Event(models.Model):
 
     help_texts = {"required": _("This field is required")}
 
-    id = models.UUIDField("UUID", primary_key=True, default=uuid.uuid4, editable=False)    # noga
+    id = models.UUIDField("UUID", primary_key=True, default=uuid.uuid4, editable=False)    # noqa
     user = models.ForeignKey(User, related_name="events", on_delete=models.CASCADE, verbose_name=_("User"))
     event_type = models.ForeignKey(
         EventType, related_name="events", on_delete=models.CASCADE, verbose_name=_("Event Type")
