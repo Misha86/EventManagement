@@ -174,7 +174,7 @@ pip install coverage
 - Run tests coverage from main directory:
 
 ```bash
-coverage run event_management/manage.py test api
+coverage run event_management/manage.py test event
 ```
 
 - Check coverage report:
