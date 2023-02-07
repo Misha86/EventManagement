@@ -55,7 +55,7 @@ jobs:
           python event_management/manage.py collectstatic --no-input
       - name: Run Coverage Test # running tests
         run: |
-          coverage run event_management/manage.py test
+          coverage run event_management/manage.py test event
           coverage run report
       - name: Run Test # running tests
         run: |
