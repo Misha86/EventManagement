@@ -50,6 +50,13 @@ jobs:
         run: |
           python event_management/manage.py makemigrations
           python event_management/manage.py migrate
+      - name: Run Collectstatic # run collectstatic to gather all project static files
+        run: |
           python event_management/manage.py collectstatic --no-input
+      - name: Run Coverage Test # running tests
+        run: |
+          coverage run event_management/manage.py test
+          coverage run report
       - name: Run Test # running tests
-        run: python event_management/manage.py test
+        run: |
+          python event_management/manage.py test
