@@ -1,4 +1,4 @@
-# Event management project
+# Event management project (Test Task)
 
 My project was created in order to help authenticated users create events for specific datetime with some information and type events.
 
